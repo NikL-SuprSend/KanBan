@@ -11,7 +11,7 @@ const { User } = require("./models");
 dotenv.config();
 const supr_client = new Suprsend(
   process.env.WORKSPACE_KEY,
-  process.env.WORKSPACE_SECRET,
+  process.env.WORKSPACE_SECRET
 );
 let distinct_id;
 const socketIO = require("socket.io")(http, {
@@ -124,22 +124,13 @@ socketIO.on("connection", (socket) => {
     // const distinct_id1 = distinct_id;
     const user = supr_client.user.get_instance(distinct_id);
     const event_name = "TASK_ADD";
-    // user.add_email(`${distinct_id}`);
-//     user.remove_slack(
-// {
+    user.add_email(`${distinct_id}`);
 
-//   "email": `${distinct_id}`,
-//     "access_token": "xoxb-5419663569697-5419804251329-tNvUztQaZW6vEgCnx4Qq9zhn"
-// }
-//       )
- 
-      user.add_slack(
-        {
-          "incoming_webhook": {
-            "url": "https://hooks.slack.com/services/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"
-          }
-        })
-      
+    user.add_slack({
+      incoming_webhook: {
+        url: process.env.INCOMING_WEBHOOK,
+      },
+    });
 
     const response1 = user.save();
     response1.then((res) => console.log("response", res));
