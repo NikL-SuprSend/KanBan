@@ -1,0 +1,28 @@
+name: Encrypt .env File
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  encrypt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Encrypt .env File
+        run: |
+          openssl aes-256-cbc -a -salt -in .env -out .env.enc
+        env:
+          PASSPHRASE: ${{ secrets.PASSPHRASE }}
+
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add .env.enc
+          git commit -m "Add encrypted .env file"
+          git push
